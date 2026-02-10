@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Hey Prapti 🌼</title>
+<style>
+*{box-sizing:border-box}
+body{
+  margin:0;height:100vh;display:flex;align-items:center;justify-content:center;
+  background:linear-gradient(135deg,#fff1eb,#ace0f9);
+  font-family:Segoe UI,Tahoma,sans-serif;overflow:hidden
+}
+.card{
+  background:#fff;padding:35px 28px;border-radius:20px;text-align:center;
+  box-shadow:0 20px 40px rgba(0,0,0,.15);max-width:380px;width:90%
+}
+h1{margin:0 0 12px;font-size:24px}
+p{margin:0 0 18px;color:#555;line-height:1.6;min-height:90px}
+.buttons{display:flex;gap:10px;flex-wrap:wrap;justify-content:center}
+button{
+  padding:12px 18px;font-size:15px;border:none;border-radius:25px;
+  cursor:pointer;transition:transform .2s
+}
+button:hover{transform:scale(1.05)}
+.choice{background:#ff7a7a;color:#fff}
+#no{background:#eaeaea;color:#333;position:fixed}
+.hearts{position:fixed;inset:0;pointer-events:none}
+.heart{position:absolute;color:#ff7a7a;font-size:18px;animation:float 4s linear infinite}
+@keyframes float{0%{transform:translateY(0);opacity:1}100%{transform:translateY(-100vh);opacity:0}}
+/* confetti animation */
+@keyframes conf{from{transform:translateY(0)}to{transform:translateY(-120vh)}}
+</style>
+</head>
+<body>
+<div class="card" id="card">
+  <h1>Hey Prapti 🌼</h1>
+  <p id="text"></p>
+  <div class="buttons" id="choices">
+    <button class="choice" data-choice="coffee">Coffee ☕</button>
+    <button class="choice" data-choice="chai">Chai 🍵</button>
+    <button class="choice" data-choice="chilli mango">Chilli Mango 🥭🌶️</button>
+    <button id="no">I’ll think about it 🙈</button>
+  </div>
+</div>
+<div class="hearts" id="hearts"></div>
+
+<script>
+// ---------------- Typing effect ----------------
+const message = "I’ve really enjoyed talking to you. So I thought I’d ask you this in a slightly different way…\n\nTomorrow sounds like a good day. So tell me — coffee, chai, or chilli mango? 😄";
+let idx = 0;
+const textEl = document.getElementById('text');
+(function type(){
+  if(idx < message.length){
+    textEl.innerHTML += message[idx] === '\n' ? '<br>' : message[idx];
+    idx++;
+    setTimeout(type,35);
+  }
+})();
+
+// ---------------- Choice handling (FIXED) ----------------
+function handleChoice(choice){
+  let line = '';
+  if(choice==='coffee') line = 'coffee khale gas hoi but I will adjust it for you... ☕😄';
+  if(choice==='chai') line = 'Chai is love ofcourse ❤️, Malai chai only not ronga saa :( 🍵';
+  if(choice==='chilli mango') line = 'nisaaaaaaa koriimmmmm hihihihihi 🥭🌶️😂';
+
+  const card = document.getElementById('card');
+  card.innerHTML = `<h1>Good choice 😌</h1><p>${line}<br><br>— Duglu</p>`;
+
+  // hearts
+  for(let i=0;i<25;i++) heart();
+
+  // WhatsApp button (manual tap)
+  const waBtn = document.createElement('button');
+  waBtn.id = 'wa';
+  waBtn.textContent = 'Open WhatsApp 💬';
+  waBtn.style.marginTop = '15px';
+  waBtn.style.padding = '10px 18px';
+  waBtn.style.border = 'none';
+  waBtn.style.borderRadius = '20px';
+  waBtn.style.background = '#25D366';
+  waBtn.style.color = '#fff';
+  waBtn.style.fontSize = '14px';
+  waBtn.style.cursor = 'pointer';
+
+  waBtn.onclick = () => {
+    // second fun animation
+    for(let k=0;k<30;k++) confetti();
+    setTimeout(()=>{
+      location.href = 'https://wa.me/?text=' + encodeURIComponent(
+        `Hey Prapti 😊\nSo it’s ${choice} then. When are you free? — Duglu`
+      );
+    },800);
+  };
+
+  card.appendChild(waBtn);
+}
+
+// attach listeners safely after load
+document.querySelectorAll('.choice').forEach(btn => {
+  btn.addEventListener('click', () => {
+    handleChoice(btn.dataset.choice);
+  });
+});
+
+// ---------------- Impossible NO button ----------------
+const noBtn = document.getElementById('no');
+noBtn.addEventListener('mouseenter', () => {
+  noBtn.style.left = Math.random()*(window.innerWidth-120)+'px';
+  noBtn.style.top  = Math.random()*(window.innerHeight-60)+'px';
+});
+
+// ---------------- Animations ----------------
+function confetti(){
+  const c = document.createElement('div');
+  c.innerText = ['✨','💛','💫','💖'][Math.floor(Math.random()*4)];
+  c.style.position = 'fixed';
+  c.style.left = Math.random()*100+'vw';
+  c.style.top = '100vh';
+  c.style.fontSize = (16+Math.random()*20)+'px';
+  c.style.animation = 'conf 1.5s ease-out forwards';
+  document.body.appendChild(c);
+  setTimeout(()=>c.remove(),1500);
+}
+
+function heart(){
+  const h = document.createElement('div');
+  h.className = 'heart';
+  h.innerText = '❤';
+  h.style.left = Math.random()*100+'vw';
+  h.style.bottom = '-20px';
+  h.style.animationDuration = (3+Math.random()*3)+'s';
+  document.getElementById('hearts').appendChild(h);
+  setTimeout(()=>h.remove(),6000);
+}
+</script>
+</body>
+</html>
